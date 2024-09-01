@@ -1,4 +1,7 @@
 <?php
+namespace Backend\Api;
+require '../vendor/autoload.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -17,7 +20,7 @@ $methodo = $_SERVER['REQUEST_METHOD'];
 $uri = $_SERVER['REQUEST_URI'];
 
 switch ($uri) {
-    case '/api/users':
+    case '/users':
         switch ($methodo) {
             case 'GET':
                 http_response_code(200);
@@ -38,7 +41,7 @@ switch ($uri) {
         break;
 
     default:
-        if (preg_match('/\/api\/users\/(\d+)/', $uri, $matches)) {
+        if (preg_match('/\/users\/(\d+)/', $uri, $matches)) {
             $id = $matches[1];
             switch ($methodo) {
                 case 'PUT':
