@@ -17,11 +17,9 @@ class UserRepository {
     public function getAllUsers() {
         return $this->users;
     }
-
     public function getUserById($id) {
         return $this->users[$id] ?? null;
     }
-
     public function createUser(User $user) {
         $id = count($this->users) + 1;
         $user->setId($id);
