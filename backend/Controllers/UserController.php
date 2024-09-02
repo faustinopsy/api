@@ -14,69 +14,53 @@ class UserController {
 
     public function getAllUsers() {
         $users = $this->userRepository->getAllUsers();
-        $result = [];
-
-        foreach ($users as $user) {
-            $result[] = [
-                'id' => $user->getId(),
-                'nome' => $user->getNome(),
-                'idade' => $user->getIdade()
-            ];
-        }
-
-        return $result;
+        http_response_code(200);
+        echo json_encode($users);
     }
 
     public function getUserById($id) {
         $user = $this->userRepository->getUserById($id);
         if ($user) {
-            return [
-                'id' => $user->getId(),
-                'nome' => $user->getNome(),
-                'idade' => $user->getIdade()
-            ];
+            http_response_code(200);
+            echo json_encode($user);
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
         }
-        return null;
     }
 
-    public function createUser($userData) {
+    public function createUser() {
+        $input = json_decode(file_get_contents('php://input'), true);
         $user = new User();
-        $user->setNome($userData['nome']);
-        $user->setIdade($userData['idade']);
-
+        $user->setNome($input['nome']);
+        $user->setIdade($input['idade']);
         $createdUser = $this->userRepository->createUser($user);
-
-        return [
-            'id' => $createdUser->getId(),
-            'nome' => $createdUser->getNome(),
-            'idade' => $createdUser->getIdade()
-        ];
+        http_response_code(201);
+        echo json_encode(['status' => true, 'message' => 'Usuário criado', 'user' => $createdUser->getId()]);
     }
 
-    public function updateUser($id, $userData) {
+    public function updateUser($id) {
+        $input = json_decode(file_get_contents('php://input'), true);
         $user = $this->userRepository->getUserById($id);
-
         if ($user) {
-            if (isset($userData['nome'])) {
-                $user->setNome($userData['nome']);
-            }
-            if (isset($userData['idade'])) {
-                $user->setIdade($userData['idade']);
-            }
-
+            $user->setNome($input['nome'] ?? $user->getNome());
+            $user->setIdade($input['idade'] ?? $user->getIdade());
             $updatedUser = $this->userRepository->updateUser($id, $user);
-
-            return [
-                'id' => $updatedUser->getId(),
-                'nome' => $updatedUser->getNome(),
-                'idade' => $updatedUser->getIdade()
-            ];
+            http_response_code(200);
+            echo json_encode(['status' => true, 'message' => 'Usuário atualizado', 'user' => $updatedUser->getId()]);
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
         }
-
-        return null;
     }
 
     public function deleteUser($id) {
-        return $this->userRepository->deleteUser($id);
+        if ($this->userRepository->deleteUser($id)) {
+            http_response_code(200);
+            echo json_encode(['status' => true, 'message' => 'Usuário excluído']);
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
+        }
     }
 }
