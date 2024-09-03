@@ -1,11 +1,12 @@
 <?php
 namespace Backend\Api;
 
-require '../vendor/autoload.php';
+require_once '../vendor/autoload.php';
 
 use Backend\Api\Controllers\UserController;
 
-header("Access-Control-Allow-Origin: *");
+$ips = ['http://localhost:8080','http://localhost:5500'];
+header("Access-Control-Allow-Origin: $ips");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
@@ -19,7 +20,7 @@ $uri = $_SERVER['REQUEST_URI'];
 
 $controller = null;
 $resposta = null;
-
+$userNotFound = 'Usuário não encontrado';
 switch (true) {
     case preg_match('/\/users$/', $uri):
         $controller = new UserController();
@@ -55,7 +56,7 @@ switch (true) {
                     echo json_encode(['status' => true, $resposta]);
                 } else {
                     http_response_code(404);
-                    echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
+                    echo json_encode(['status' => false, 'message' => $userNotFound]);
                 }
                 break;
 
@@ -67,7 +68,7 @@ switch (true) {
                     echo json_encode(['status' => true, 'message' => 'Usuário atualizado', 'user' => $resposta]);
                 } else {
                     http_response_code(404);
-                    echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
+                    echo json_encode(['status' => false, 'message' => $userNotFound]);
                 }
                 break;
 
@@ -77,7 +78,7 @@ switch (true) {
                     echo json_encode(['status' => true, 'message' => 'Usuário Excluido']);
                 } else {
                     http_response_code(404);
-                    echo json_encode(['status' => false, 'message' => 'Usuário não encontrado']);
+                    echo json_encode(['status' => false, 'message' => $userNotFound]);
                 }
                 break;
 
