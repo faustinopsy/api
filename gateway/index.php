@@ -1,5 +1,5 @@
 <?php
-function forwardRequest($url, $method, $data = null) {
+function avancaRequisicao($url, $method, $data = null) {
     $ch = curl_init();
     // Configura a URL e o método HTTP para encaminhar a requisição
     curl_setopt($ch, CURLOPT_URL, $url);
@@ -31,28 +31,28 @@ $uri = $_SERVER['REQUEST_URI'];
 $parsedUrl = parse_url($uri);
 $path = $parsedUrl['path'];
 // Ajusta a URL para encaminhar para a API rodando na porta 8080
-$targetUrl = "http://localhost:8080" . $path;
+$targetUrl = "http://localhost:8089" . $path;
 
 switch ($method) {
     case 'GET':
         // Encaminha a requisição GET para a API na porta 8080
-        $response = forwardRequest($targetUrl, 'GET');
+        $response = avancaRequisicao($targetUrl, 'GET');
         break;
     case 'POST':
         // Lê o corpo da requisição
         $data = json_decode(file_get_contents('php://input'), true);
         // Encaminha a requisição POST para a API na porta 8080
-        $response = forwardRequest($targetUrl, 'POST', $data);
+        $response = avancaRequisicao($targetUrl, 'POST', $data);
         break;
     case 'PUT':
         // Lê o corpo da requisição
         $data = json_decode(file_get_contents('php://input'), true);
         // Encaminha a requisição PUT para a API na porta 8080
-        $response = forwardRequest($targetUrl, 'PUT', $data);
+        $response = avancaRequisicao($targetUrl, 'PUT', $data);
         break;
     case 'DELETE':
         // Encaminha a requisição DELETE para a API na porta 8080
-        $response = forwardRequest($targetUrl, 'DELETE');
+        $response = avancaRequisicao($targetUrl, 'DELETE');
         break;
     default:
         http_response_code(405); // Método não permitido
