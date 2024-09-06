@@ -4,8 +4,8 @@ namespace Backend\Api;
 require_once '../vendor/autoload.php';
 
 use Backend\Api\Controllers\UserController;
-
-$ips = ['http://localhost:8080','http://localhost:5500'];
+use Backend\Api\Repositories\UserRepository;
+$ips = 'http://localhost:8080, http://localhost:5500';
 header("Access-Control-Allow-Origin: $ips");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -23,7 +23,8 @@ $resposta = null;
 $userNotFound = 'Usuário não encontrado';
 switch (true) {
     case preg_match('/\/users$/', $uri):
-        $controller = new UserController();
+        $repository = new UserRepository();
+        $controller = new UserController($repository);
         switch ($method) {
             case 'GET':
                 $resposta = $controller->getAllUsers();
@@ -47,7 +48,8 @@ switch (true) {
 
     case preg_match('/\/users\/(\d+)$/', $uri, $matches):
         $id = $matches[1];
-        $controller = new UserController();
+        $repository = new UserRepository();
+        $controller = new UserController($repository);
         switch ($method) {
             case 'GET':
                 $resposta = $controller->getUserById($id);

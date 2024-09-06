@@ -8,8 +8,8 @@ use Backend\Api\Repositories\UserRepository;
 class UserController {
     private $userRepository;
 
-    public function __construct() {
-        $this->userRepository = new UserRepository();
+    public function __construct(UserRepository $userRepository) {
+        $this->userRepository = $userRepository;
     }
 
     public function getAllUsers() {
